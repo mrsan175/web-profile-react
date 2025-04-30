@@ -11,7 +11,7 @@ const Jumbotron = () => {
 
   return (
     <section
-      className="relative min-h-[calc(100vh-4rem)] overflow-hidden"
+      className="relative min-h-[calc(100vh-4rem)] overflow-hidden snap-start"
       id="home"
     >
       {/* Background Image with Motion */}
