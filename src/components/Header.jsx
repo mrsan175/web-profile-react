@@ -5,6 +5,25 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
   const [activeSection, setActiveSection] = useState("");
+  const [flashKey, setFlashKey] = useState(0);
+
+  useEffect(() => {
+    const sections = document.querySelectorAll("section[id]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+            setFlashKey((prev) => prev + 1); // Trigger ulang animasi
+          }
+        });
+      },
+      { threshold: 0.6 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => sections.forEach((section) => observer.unobserve(section));
+  }, []);
 
   useEffect(() => {
     const sections = document.querySelectorAll("section[id]");
@@ -43,10 +62,12 @@ const Header = () => {
           <nav className="hidden md:flex space-x-8 text-white">
             {navLinks.map(({ href, label }) => (
               <a
-                key={href}
+                key={`${href}-${flashKey}`} // key unik agar render ulang
                 href={href}
-                className={`hover:text-gray-400 transition-colors ${
-                  activeSection === href.substring(1) ? "font-bold" : ""
+                className={`hover:text-gray-400 transition-colors relative ${
+                  activeSection === href.substring(1)
+                    ? "font-bold lightning-effect"
+                    : ""
                 }`}
               >
                 {label}
